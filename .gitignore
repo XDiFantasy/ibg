@@ -7,4 +7,5 @@ app.db
 env
 venv
 *.sublime*
-vscode/
+.vscode/
+config.py

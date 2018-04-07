@@ -2,7 +2,7 @@ from flask import render_template
 from flask_appbuilder.models.sqla.interface import SQLAInterface
 from flask_appbuilder import ModelView, MasterDetailView
 from app import appbuilder, db
-from .models import Equip, AttrCh, Strategy
+from .models import Equip, AttrCh, Strategy, FundType, Theme
 """
     Create your Views::
 
@@ -16,8 +16,36 @@ from .models import Equip, AttrCh, Strategy
 
     appbuilder.add_view(MyModelView, "My View", icon="fa-folder-open-o", category="My Category", category_icon='fa-envelope')
 """
+class FundTypeModelView(ModelView):
+    datamodel = SQLAInterface(FundType)
+    list_columns = [
+        'price', 'rate'
+    ]
+class ThemeModelView(ModelView):
+    datamodel = SQLAInterface(Theme)
+    list_column = [
+        'title', 'price'
+    ]
+    show_fieldsets = [
+        ('Base',{'fields':[
+            'title', 'detail', 'price'
+        ]}),
+        ('Players',{'fields':[
+            'player_one','player_two','player_three'
+        ]})
+    ]
+    add_fieldsets = [
+        ('Base',{'fields':[
+            'title', 'detail', 'price'
+        ]}),
+        ('Players',{'fields':[
+            'player_one','player_two','player_three'
+        ]})
+    ]
 class AttrChModelView(ModelView):
     datamodel = SQLAInterface(AttrCh)
+    
+    
 
 class EquipModelView(ModelView):
     datamodel = SQLAInterface(Equip)
@@ -106,6 +134,8 @@ class StrategyModelView(ModelView):
 appbuilder.add_view(AttrChModelView,'属性')
 appbuilder.add_view(EquipModelView,'装备')
 appbuilder.add_view(StrategyModelView,'策略')
+appbuilder.add_view(ThemeModelView, '主题')
+appbuilder.add_view(FundTypeModelView, '基金')
 
 """
     Application wide 404 error handler

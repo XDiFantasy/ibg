@@ -1,6 +1,6 @@
 from flask_appbuilder import Model
 from flask_appbuilder.models.mixins import AuditMixin, FileColumn, ImageColumn
-from sqlalchemy import Column, Integer, String, ForeignKey ,FLOAT, Text
+from sqlalchemy import Column, Integer, String, ForeignKey ,FLOAT, Text,Date
 from sqlalchemy.orm import relationship
 """
 
@@ -73,4 +73,81 @@ class Equip(Model):
     
 
     def __repr__(self):
-        return "<Equip %r, %r, %r>" % (self.id, self.name, self.attr_ch_id)      
+        return "<Equip %r, %r, %r>" % (self.id, self.name, self.attr_ch_id)   
+class TeamInfo(Model):
+    __tablename__ = 'team_info'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255))
+    city = Column(String(45))
+    intro = Column(String(255))
+
+    def __init__(self, name, city, intro):
+        self.name, self.city, self.intro = (
+            name, city, intro)
+
+    def __repr__(self):
+        return "<TeamInfo %r>" % self.id
+class PlayerBase(Model):
+    __tablename__ = 'player_base'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50))
+    birthday = Column(Date)
+    country = Column(String(45))
+    height = Column(FLOAT)
+    weight = Column(FLOAT)
+    armspan = Column(FLOAT)
+    reach_height = Column(FLOAT)
+    draft = Column(String(255))
+
+    # season_data_id = Column(Integer, ForeignKey('season_data.id'))
+    team_id = Column(Integer, ForeignKey("team_info.id"))
+    cloth_num = Column(Integer)
+    pos1 = Column(String(2))
+    pos2 = Column(String(2))
+    price = Column(Integer)
+    score = Column(Integer)
+
+    team = relationship("TeamInfo", backref='playerbase')
+
+    def __init__(self, name, birthday, country, height, wieght, armspan,
+                 reach_height, draft, team_id, cloth_num, pos1, pos2, price, score):
+        (self.name, self.birthday, self.country, self.height, self.wieght, self.armspan,
+         self.reach_height, self.draft, self.team_id,
+         self.cloth_num, self.pos1, self.pos2, self.price, self.score) = (name, birthday, country,
+                                                                          height, wieght, armspan, reach_height, draft,
+                                                                          team_id, cloth_num, pos1, pos2, price, score)
+
+    def __repr__(self):
+        return "<PlayerBase %r>" % self.id
+class Theme(Model):
+    __tablename__ = 'theme'
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    title = Column(String(255), nullable=True)
+    detail = Column(Text(512), nullable=True)
+    price = Column(Integer, nullable=True)
+    player_one_id = Column(Integer, ForeignKey('player_base.id'), nullable=False)
+    player_two_id = Column(Integer, ForeignKey('player_base.id'), nullable=False)
+    player_three_id = Column(Integer, ForeignKey('player_base.id'), nullable=False)
+
+    player_one = relationship('PlayerBase',foreign_keys=player_one_id)
+    player_two = relationship('PlayerBase',foreign_keys=player_two_id)
+    player_three = relationship('PlayerBase',foreign_keys=player_three_id)
+
+
+
+    def __repr__(self):
+        return '<Theme %r>' % self.id
+
+
+class FundType(Model):
+    __tablename__ = 'fund_type'
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    price = Column(Integer, nullable=True, default=0)
+    rate = Column(FLOAT, nullable=True, default=1)
+
+
+    def __repr__(self):
+        return '<FundType %r>' % self.id
+
