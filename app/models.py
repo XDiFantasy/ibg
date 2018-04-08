@@ -120,7 +120,7 @@ class PlayerBase(Model):
                                                                           team_id, cloth_num, pos1, pos2, price, score)
 
     def __repr__(self):
-        return "<PlayerBase %r>" % self.id
+        return "<PlayerBase %r : %r>" % (self.id,self.name)
 class Theme(Model):
     __tablename__ = 'theme'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
